@@ -18,8 +18,7 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 
-#include "hector_stability_metrics/support_polygon.h"
-#include <Eigen/Geometry>
+#include "hector_pose_prediction_interface/types.h"
 
 namespace hector_pose_prediction_interface
 {
@@ -41,7 +40,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPoseAndSupportPolygon( Eigen::Transform<Scalar, 3, Eigen::Isometry> &pose,
+  virtual Scalar predictPoseAndSupportPolygon( Isometry3<Scalar> &pose,
                                                SupportPolygon<Scalar> &support_polygon ) = 0;
 
   /*!
@@ -50,7 +49,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPose( Eigen::Transform<Scalar, 3, Eigen::Isometry> &pose ) = 0;
+  virtual Scalar predictPose( Isometry3<Scalar> &pose ) = 0;
 
   /*!
    * Estimate the support polygon for a given pose.
@@ -59,7 +58,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  virtual bool estimateSupportPolygon( const Eigen::Transform<Scalar, 3, Eigen::Isometry> &pose,
+  virtual bool estimateSupportPolygon( const Isometry3<Scalar> &pose,
                                        SupportPolygon<Scalar> &support_polygon ) = 0;
 };
 }  // namespace hector_pose_prediction_interface
