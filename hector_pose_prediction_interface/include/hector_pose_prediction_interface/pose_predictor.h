@@ -18,6 +18,8 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 
+#include <memory>
+
 #include "hector_pose_prediction_interface/types.h"
 
 namespace hector_pose_prediction_interface
