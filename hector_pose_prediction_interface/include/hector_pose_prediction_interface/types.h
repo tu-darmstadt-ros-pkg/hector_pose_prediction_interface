@@ -18,29 +18,25 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 
-#include <hector_stability_metrics/math/types.h>
 #include <hector_stability_metrics/support_polygon.h>
+#include <hector_stability_metrics/types.h>
 #include <Eigen/Geometry>
 
 namespace hector_pose_prediction_interface
 {
-template <typename Scalar>
-using SupportPolygon = hector_stability_metrics::SupportPolygon<Scalar>;
 
-using SupportPolygonf = hector_stability_metrics::SupportPolygonf;
-using SupportPolygond = hector_stability_metrics::SupportPolygond;
+using hector_stability_metrics::SupportPolygon;
+using hector_stability_metrics::SupportPolygonf;
+using hector_stability_metrics::SupportPolygond;
 
-template <typename Scalar>
-using Vector3 = hector_stability_metrics::Vector3<Scalar>;
-using Vector3f = hector_stability_metrics::Vector3f;
-using Vector3d = hector_stability_metrics::Vector3d;
-template <typename Scalar>
-using Vector3List = hector_stability_metrics::Vector3List<Scalar>;
+using hector_stability_metrics::Vector3;
+using hector_stability_metrics::Vector3f;
+using hector_stability_metrics::Vector3d;
+using hector_stability_metrics::Vector3List;
 
-template <typename Scalar>
-using Isometry3 = hector_stability_metrics::Isometry3<Scalar>;
-using Isometry3f = hector_stability_metrics::Isometry3f;
-using Isometry3d = hector_stability_metrics::Isometry3d;
+using hector_stability_metrics::Isometry3;
+using hector_stability_metrics::Isometry3f;
+using hector_stability_metrics::Isometry3d;
 
 }  // namespace hector_pose_prediction_interface
 
