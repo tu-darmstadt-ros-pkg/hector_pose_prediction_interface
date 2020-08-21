@@ -32,6 +32,9 @@ template<typename Scalar>
 class PosePredictor
 {
 public:
+  using Ptr = std::shared_ptr<PosePredictor<Scalar> >;
+  using ConstPtr = std::shared_ptr<const PosePredictor<Scalar> >;
+
   /*!
    * Predict the pose of the robot and the support polygon with the passed pose as initial guess.
    * For example, by tipping the robot over unstable axes until a stable pose was found.
