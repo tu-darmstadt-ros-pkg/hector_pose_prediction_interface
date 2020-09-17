@@ -83,7 +83,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPose( Isometry3<Scalar> &pose ) = 0;
+  virtual Scalar predictPose( Pose<Scalar> &pose ) = 0;
 
   /*!
    * Estimate the support polygon for a given pose.
@@ -92,7 +92,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  virtual bool estimateSupportPolygon( const Isometry3<Scalar> &pose,
+  virtual bool estimateSupportPolygon( const Pose<Scalar> &pose,
                                        SupportPolygon<Scalar> &support_polygon ) = 0;
 
   /*!
