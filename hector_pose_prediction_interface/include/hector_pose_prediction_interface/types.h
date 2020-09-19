@@ -29,6 +29,11 @@ using hector_stability_metrics::SupportPolygon;
 using hector_stability_metrics::SupportPolygonf;
 using hector_stability_metrics::SupportPolygond;
 
+using hector_stability_metrics::Vector2;
+using hector_stability_metrics::Vector2f;
+using hector_stability_metrics::Vector2d;
+using hector_stability_metrics::Vector2List;
+
 using hector_stability_metrics::Vector3;
 using hector_stability_metrics::Vector3f;
 using hector_stability_metrics::Vector3d;

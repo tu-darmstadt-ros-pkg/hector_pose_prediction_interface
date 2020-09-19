@@ -54,17 +54,28 @@ public:
   using Ptr = std::shared_ptr<PosePredictor<Scalar> >;
   using ConstPtr = std::shared_ptr<const PosePredictor<Scalar> >;
 
+  virtual ~PosePredictor<Scalar>() = default;
+
   /*!
-   * Predict the pose of the robot, the support polygon and contact information (see ContactInformation) with the passed pose as initial guess.
+   * Predict the pose of the robot, the support polygon and contact information (see ContactInformation) with the
+   * passed pose as initial guess.
    * For example, by tipping the robot over unstable axes until a stable pose was found.
    * @param pose Used as both input and output. An isometric transform consisting of a translation and a rotation.
    * @param support_polygon The resulting support polygon if a stable pose was found.
-   * @param contact_information Contact information for the pose if a stable pose was found. This includes information about the joint type that is in contact and surface normals if available.
+   * @param contact_information Contact information for the pose if a stable pose was found.
+   *   This includes information about the joint type that is in contact and surface normals if available.
+   * @param requested_contact_information Flags indicating the contact information that should be computed.
+   *   See RequestedContactInformation and ContactInformation.
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
-                                                   ContactInformation<Scalar> &contact_information ) = 0;
+  Scalar predictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+                                           ContactInformation<Scalar> &contact_information,
+                                           ContactInformationFlags requested_contact_information = contact_information_flags::All )
+  {
+    return doPredictPoseAndContactInformation( pose, support_polygon, contact_information,
+                                               requested_contact_information );
+  }
 
   /*!
    * Predict the pose of the robot and the support polygon with the passed pose as initial guess.
@@ -74,8 +85,10 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPoseAndSupportPolygon( Pose<Scalar> &pose,
-                                               SupportPolygon<Scalar> &support_polygon ) = 0;
+  Scalar predictPoseAndSupportPolygon( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon )
+  {
+    return doPredictPoseAndSupportPolygon( pose, support_polygon );
+  }
 
   /*!
    * Predict the pose of the robot using the passed pose as initial guess.
@@ -83,7 +96,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  virtual Scalar predictPose( Pose<Scalar> &pose ) = 0;
+  Scalar predictPose( Pose<Scalar> &pose ) { return doPredictPose( pose ); }
 
   /*!
    * Estimate the support polygon for a given pose.
@@ -92,19 +105,28 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  virtual bool estimateSupportPolygon( const Pose<Scalar> &pose,
-                                       SupportPolygon<Scalar> &support_polygon ) = 0;
+  bool estimateSupportPolygon( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon )
+  {
+    return doEstimateSupportPolygon( pose, support_polygon );
+  }
 
   /*!
    * Estimate the support polygon and contact information (see ContactInformation) for a given pose.
    * @param pose The pose of the robot.
    * @param support_polygon The estimated support polygon.
-   * @param contact_information Contact information for the pose if a stable pose was found. This includes information about the joint type that is in contact and surface normals if available.
+   * @param contact_information Contact information for the pose if a stable pose was found.
+   *   This includes information about the joint type that is in contact and surface normals if available.
+   * @param requested_contact_information Flags indicating the contact information that should be computed.
+   *   See RequestedContactInformation and ContactInformation.
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  virtual bool estimateContactInformation( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
-                                           ContactInformation<Scalar> &contact_information ) = 0;
+  bool estimateContactInformation( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+                                   ContactInformation<Scalar> &contact_information,
+                                   ContactInformationFlags requested_contact_information = contact_information_flags::All )
+  {
+    return doEstimateContactInformation( pose, support_polygon, contact_information, requested_contact_information );
+  }
 
   virtual typename RobotModel<Scalar>::Ptr robotModel() = 0;
 
@@ -113,6 +135,21 @@ public:
   virtual void updateSettings( const PosePredictorSettings<Scalar> &settings ) = 0;
 
   virtual const PosePredictorSettings<Scalar> &settings() const = 0;
+
+private:
+  virtual Scalar doPredictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+                                                     ContactInformation<Scalar> &contact_information,
+                                                     ContactInformationFlags requested_contact_information ) = 0;
+
+  virtual Scalar doPredictPoseAndSupportPolygon( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) = 0;
+
+  virtual Scalar doPredictPose( Pose<Scalar> &pose ) = 0;
+
+  virtual bool doEstimateSupportPolygon( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) = 0;
+
+  virtual bool doEstimateContactInformation( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+                                             ContactInformation<Scalar> &contact_information,
+                                             ContactInformationFlags requested_contact_information ) = 0;
 };
 }  // namespace hector_pose_prediction_interface
 

@@ -23,15 +23,28 @@
 namespace hector_pose_prediction_interface
 {
 
+namespace contact_information_flags
+{
+enum ContactInformationFlags : unsigned short
+{
+  None = 0,
+  JointType = 0x1,
+  Point = 0x2,
+  SurfaceNormal = 0x4,
+  All = 0xffff
+};
+}
+using ContactInformationFlags = contact_information_flags::ContactInformationFlags;
+
 namespace joint_types
 {
-enum JointType : int
+enum JointType : unsigned int
 {
   Undefined = 0,
   Tracks = 1,
-  Chassis = 2,
-  Fragile = 4,
-  //! If you want to define custom types use values between 1024 and 2047
+  Chassis = 2, // Note: Despite the pattern this is not a flags enum
+  Fragile = 8,
+  //! If you want to define custom types use values between 1024 and 2047 so checking for the Custom bit is possible
   Custom = 1024
 };
 }
@@ -50,6 +63,42 @@ struct ContactInformation
 {
   std::vector<ContactPointInformation<Scalar> > contact_points;
 };
+
+// Define operators for contact flags
+ContactInformationFlags operator&( ContactInformationFlags a, ContactInformationFlags b )
+{
+  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
+}
+
+ContactInformationFlags operator|( ContactInformationFlags a, ContactInformationFlags b )
+{
+  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
+}
+
+ContactInformationFlags operator^( ContactInformationFlags a, ContactInformationFlags b )
+{
+  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
+}
+
+ContactInformationFlags operator~( ContactInformationFlags a )
+{
+  return static_cast<ContactInformationFlags>(~static_cast<unsigned short>(a));
+}
+
+ContactInformationFlags &operator&=( ContactInformationFlags &a, ContactInformationFlags b )
+{
+  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
+}
+
+ContactInformationFlags &operator|=( ContactInformationFlags &a, ContactInformationFlags b )
+{
+  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
+}
+
+ContactInformationFlags &operator^=( ContactInformationFlags &a, ContactInformationFlags b )
+{
+  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
+}
 }  // namespace hector_pose_prediction_interface
 
 #endif  // HECTOR_POSE_PREDICTION_INTERFACE_CONTACT_INFORMATION_H
