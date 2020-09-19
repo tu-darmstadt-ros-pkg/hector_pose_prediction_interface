@@ -27,6 +27,12 @@ namespace hector_pose_prediction_interface
 template<typename Scalar>
 struct PosePredictorSettings
 {
+  PosePredictorSettings( int maximum_iterations, Scalar contact_threshold, Scalar tip_over_threshold )
+    : maximum_iterations( maximum_iterations ), contact_threshold( contact_threshold )
+      , tip_over_threshold( tip_over_threshold ) { }
+
+  virtual ~PosePredictorSettings() = default;
+
   //! The maximum number of iterations the pose predictor will run before giving up.
   int maximum_iterations;
   //! The maximum distance in m for a potential contact point to be considered as in contact.
@@ -39,6 +45,14 @@ struct PosePredictorSettings
   void setTipOverThresholdFromAngle( Scalar angle )
   {
     tip_over_threshold = ::std::cos( angle );
+  }
+
+  PosePredictorSettings<Scalar> &operator=( const PosePredictorSettings<Scalar> &other )
+  {
+    maximum_iterations = other.maximum_iterations;
+    contact_threshold = other.contact_threshold;
+    tip_over_threshold = other.tip_over_threshold;
+    return *this;
   }
 };
 
