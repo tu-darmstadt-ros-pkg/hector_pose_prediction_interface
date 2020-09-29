@@ -98,6 +98,13 @@ public:
     translation_ = Vector3<Scalar>::Zero();
   }
 
+  Pose( const Eigen::Translation<Scalar, 3> &translation, const Eigen::Quaternion<Scalar> &orientation )
+  {
+    assert( std::abs( orientation.squaredNorm() - 1 ) < 1E-2 && "Quaternion passed to pose should be normalized!" );
+    orientation_ = orientation;
+    translation_ = translation.vector();
+  }
+
   template<typename Derived>
   Pose( const Eigen::Translation<Scalar, 3> &translation, const Eigen::RotationBase<Derived, 3> &rotation )
   {
@@ -110,6 +117,13 @@ public:
   {
     orientation_ = Eigen::Quaternion<Scalar>( rotation.derived()).normalized();
     translation_ = translation.vector();
+  }
+
+  Pose( const Vector3<Scalar> &translation, const Eigen::Quaternion<Scalar> &orientation )
+  {
+    assert( std::abs( orientation.squaredNorm() - 1 ) < 1E-2 && "Quaternion passed to pose should be normalized!" );
+    orientation_ = orientation;
+    translation_ = translation;
   }
 
   template<typename Derived>
