@@ -30,19 +30,23 @@ public:
   void updateJointPositions( const std::vector<Scalar> &positions ) { doUpdateJointPositions( positions ); }
 
   //! The names of the joints represented in this robot model.
-  std::vector<std::string> getJointNames() { return doGetJointNames(); }
+  std::vector<std::string> getJointNames() const { return doGetJointNames(); }
+
+  std::vector<Scalar> getJointPositions() const { return doGetJointPositions(); }
 
   //! The position of the center of mass in the robot coordinate frame.
-  Vector3<Scalar> centerOfMass() { return computeCenterOfMass(); }
+  Vector3<Scalar> centerOfMass() const { return computeCenterOfMass(); }
 
 private:
   virtual void doUpdateJointPositions( const std::unordered_map<std::string, Scalar> &joint_positions ) = 0;
 
   virtual void doUpdateJointPositions( const std::vector<Scalar> &positions ) = 0;
 
-  virtual std::vector<std::string> doGetJointNames() = 0;
+  virtual std::vector<std::string> doGetJointNames() const = 0;
 
-  virtual Vector3<Scalar> computeCenterOfMass() = 0;
+  virtual std::vector<Scalar> doGetJointPositions() const = 0;
+
+  virtual Vector3<Scalar> computeCenterOfMass() const = 0;
 };
 }  // namespace hector_pose_prediction_interface
 

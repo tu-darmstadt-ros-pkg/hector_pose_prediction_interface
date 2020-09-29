@@ -20,6 +20,7 @@
 
 #include "hector_pose_prediction_interface/contact_information.h"
 #include "hector_pose_prediction_interface/robot_model.h"
+#include "hector_pose_prediction_interface/types.h"
 
 namespace hector_pose_prediction_interface
 {
@@ -59,6 +60,10 @@ struct PosePredictorSettings
 /*!
  * Interface for a pose predictor implementation which based on an input pose, e.g., a position and identity rotation,
  * estimates the pose of the robot at the given position in the world.
+ *
+ * @b Note:
+ * The members of this class may be called by different threads concurrently and are REQUIRED to be threadsafe.
+ *
  * @tparam Scalar The floating point type used for calculations usually float or double.
  */
 template<typename Scalar>
