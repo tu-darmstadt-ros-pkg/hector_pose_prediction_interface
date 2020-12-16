@@ -55,7 +55,7 @@ struct ContactPointInformation
 {
   Vector3<Scalar> point;
   Vector3<Scalar> surface_normal;
-  int joint_type;
+  JointType joint_type;
 };
 
 template<typename Scalar>

@@ -94,7 +94,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+  Scalar predictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygonWithStabilities<Scalar> &support_polygon,
                                            ContactInformation<Scalar> &contact_information,
                                            ContactInformationFlags requested_contact_information = contact_information_flags::All )
   {
@@ -110,7 +110,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndSupportPolygon( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon )
+  Scalar predictPoseAndSupportPolygon( Pose<Scalar> &pose, SupportPolygonWithStabilities<Scalar> &support_polygon )
   {
     return doPredictPoseAndSupportPolygon( pose, support_polygon );
   }
@@ -130,7 +130,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  bool estimateSupportPolygon( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon )
+  bool estimateSupportPolygon( const Pose<Scalar> &pose, SupportPolygonWithStabilities<Scalar> &support_polygon )
   {
     return doEstimateSupportPolygon( pose, support_polygon );
   }
@@ -146,7 +146,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  bool estimateContactInformation( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+  bool estimateContactInformation( const Pose<Scalar> &pose, SupportPolygonWithStabilities<Scalar> &support_polygon,
                                    ContactInformation<Scalar> &contact_information,
                                    ContactInformationFlags requested_contact_information = contact_information_flags::All )
   {
@@ -162,17 +162,21 @@ public:
   virtual const PosePredictorSettings<Scalar> &settings() const = 0;
 
 private:
-  virtual Scalar doPredictPoseAndContactInformation( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+  virtual Scalar doPredictPoseAndContactInformation( Pose<Scalar> &pose,
+                                                     SupportPolygonWithStabilities<Scalar> &support_polygon,
                                                      ContactInformation<Scalar> &contact_information,
                                                      ContactInformationFlags requested_contact_information ) = 0;
 
-  virtual Scalar doPredictPoseAndSupportPolygon( Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) = 0;
+  virtual Scalar doPredictPoseAndSupportPolygon( Pose<Scalar> &pose,
+                                                 SupportPolygonWithStabilities<Scalar> &support_polygon ) = 0;
 
   virtual Scalar doPredictPose( Pose<Scalar> &pose ) = 0;
 
-  virtual bool doEstimateSupportPolygon( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) = 0;
+  virtual bool doEstimateSupportPolygon( const Pose<Scalar> &pose,
+                                         SupportPolygonWithStabilities<Scalar> &support_polygon ) = 0;
 
-  virtual bool doEstimateContactInformation( const Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+  virtual bool doEstimateContactInformation( const Pose<Scalar> &pose,
+                                             SupportPolygonWithStabilities<Scalar> &support_polygon,
                                              ContactInformation<Scalar> &contact_information,
                                              ContactInformationFlags requested_contact_information ) = 0;
 };
