@@ -18,21 +18,11 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 
-#include <hector_stability_metrics/support_polygon.h>
 #include <hector_stability_metrics/types.h>
 #include <Eigen/Geometry>
 
 namespace hector_pose_prediction_interface
 {
-
-using hector_stability_metrics::SupportPolygon;
-using hector_stability_metrics::SupportPolygonf;
-using hector_stability_metrics::SupportPolygond;
-
-using hector_stability_metrics::SupportPolygonWithStabilities;
-using hector_stability_metrics::SupportPolygonWithStabilitiesf;
-using hector_stability_metrics::SupportPolygonWithStabilitiesd;
-
 using hector_stability_metrics::Vector2;
 using hector_stability_metrics::Vector2f;
 using hector_stability_metrics::Vector2d;
@@ -46,6 +36,16 @@ using hector_stability_metrics::Vector3List;
 using hector_stability_metrics::Isometry3;
 using hector_stability_metrics::Isometry3f;
 using hector_stability_metrics::Isometry3d;
+
+template<typename Scalar>
+struct SupportPolygon
+{
+  //! The convex hull of contact points making up the support polygon.
+  Vector3List<Scalar> contact_hull_points;
+  //! The stability for each edge of the support polygon formed by the contact_hull_points.
+  //! First value is the stability of the edge from the first point at index 0 to the second point at index 1.
+  std::vector<Scalar> edge_stabilities;
+};
 
 //! Represents the pose of a robot as a combination of orientation quaternion and translation vector.
 template<typename Scalar>
