@@ -65,37 +65,37 @@ struct ContactInformation
 };
 
 // Define operators for contact flags
-ContactInformationFlags operator&( ContactInformationFlags a, ContactInformationFlags b )
+inline ContactInformationFlags operator&( ContactInformationFlags a, ContactInformationFlags b )
 {
   return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
 }
 
-ContactInformationFlags operator|( ContactInformationFlags a, ContactInformationFlags b )
+inline ContactInformationFlags operator|( ContactInformationFlags a, ContactInformationFlags b )
 {
   return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
 }
 
-ContactInformationFlags operator^( ContactInformationFlags a, ContactInformationFlags b )
+inline ContactInformationFlags operator^( ContactInformationFlags a, ContactInformationFlags b )
 {
   return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
 }
 
-ContactInformationFlags operator~( ContactInformationFlags a )
+inline ContactInformationFlags operator~( ContactInformationFlags a )
 {
   return static_cast<ContactInformationFlags>(~static_cast<unsigned short>(a));
 }
 
-ContactInformationFlags &operator&=( ContactInformationFlags &a, ContactInformationFlags b )
+inline ContactInformationFlags &operator&=( ContactInformationFlags &a, ContactInformationFlags b )
 {
   return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
 }
 
-ContactInformationFlags &operator|=( ContactInformationFlags &a, ContactInformationFlags b )
+inline ContactInformationFlags &operator|=( ContactInformationFlags &a, ContactInformationFlags b )
 {
   return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
 }
 
-ContactInformationFlags &operator^=( ContactInformationFlags &a, ContactInformationFlags b )
+inline ContactInformationFlags &operator^=( ContactInformationFlags &a, ContactInformationFlags b )
 {
   return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
 }
