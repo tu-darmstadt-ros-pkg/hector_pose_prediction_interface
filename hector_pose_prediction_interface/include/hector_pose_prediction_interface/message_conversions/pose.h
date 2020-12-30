@@ -33,21 +33,21 @@ namespace hector_pose_prediction_interface
 namespace message_conversions
 {
 template<typename Scalar>
-Pose<Scalar> msgToPose( const geometry_msgs::Pose &msg )
+inline math::Pose<Scalar> msgToPose( const geometry_msgs::Pose &msg )
 {
   using namespace hector_stability_metrics::message_conversions;
   return { msgToVector<Scalar>( msg.position ), msgToQuaternion<Scalar>( msg.orientation ) };
 }
 
 template<typename Scalar>
-Pose<Scalar> msgToPose( const geometry_msgs::Transform &msg )
+inline math::Pose<Scalar> msgToPose( const geometry_msgs::Transform &msg )
 {
   using namespace hector_stability_metrics::message_conversions;
   return { msgToVector<Scalar>( msg.translation ), msgToQuaternion<Scalar>( msg.rotation ) };
 }
 
 template<typename Scalar>
-geometry_msgs::Pose poseToPoseMsg( const Pose<Scalar> &pose )
+inline geometry_msgs::Pose poseToPoseMsg( const math::Pose<Scalar> &pose )
 {
   using namespace hector_stability_metrics::message_conversions;
   geometry_msgs::Pose msg;
@@ -57,7 +57,7 @@ geometry_msgs::Pose poseToPoseMsg( const Pose<Scalar> &pose )
 }
 
 template<typename Scalar>
-geometry_msgs::Transform poseToTransformMsg( const Pose<Scalar> &pose )
+inline geometry_msgs::Transform poseToTransformMsg( const math::Pose<Scalar> &pose )
 {
   using namespace hector_stability_metrics::message_conversions;
   geometry_msgs::Transform msg;

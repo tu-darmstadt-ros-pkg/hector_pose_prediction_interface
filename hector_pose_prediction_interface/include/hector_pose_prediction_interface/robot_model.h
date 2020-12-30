@@ -35,7 +35,7 @@ public:
   std::vector<Scalar> getJointPositions() const { return doGetJointPositions(); }
 
   //! The position of the center of mass in the robot coordinate frame.
-  Vector3<Scalar> centerOfMass() const { return computeCenterOfMass(); }
+  math::Vector3<Scalar> centerOfMass() const { return computeCenterOfMass(); }
 
 private:
   virtual void doUpdateJointPositions( const std::unordered_map<std::string, Scalar> &joint_positions ) = 0;
@@ -46,7 +46,7 @@ private:
 
   virtual std::vector<Scalar> doGetJointPositions() const = 0;
 
-  virtual Vector3<Scalar> computeCenterOfMass() const = 0;
+  virtual math::Vector3<Scalar> computeCenterOfMass() const = 0;
 };
 }  // namespace hector_pose_prediction_interface
 

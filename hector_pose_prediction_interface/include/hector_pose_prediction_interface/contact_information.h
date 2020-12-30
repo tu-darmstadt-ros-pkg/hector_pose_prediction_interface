@@ -53,8 +53,8 @@ using JointType = joint_types::JointType;
 template<typename Scalar>
 struct ContactPointInformation
 {
-  Vector3<Scalar> point;
-  Vector3<Scalar> surface_normal;
+  math::Vector3<Scalar> point;
+  math::Vector3<Scalar> surface_normal;
   JointType joint_type;
 };
 

@@ -34,8 +34,9 @@ namespace message_conversions
 {
 
 template<typename Scalar>
-moveit::core::RobotState robotModelToRobotState( const RobotModel <Scalar> &model, const urdf::ModelSharedPtr &urdf,
-                                                 const srdf::ModelSharedPtr &srdf = std::make_shared<srdf::Model>())
+inline moveit::core::RobotState
+robotModelToRobotState( const RobotModel<Scalar> &model, const urdf::ModelSharedPtr &urdf,
+                        const srdf::ModelSharedPtr &srdf = std::make_shared<srdf::Model>())
 {
   moveit::core::RobotModelPtr robot_model = std::make_shared<moveit::core::RobotModel>( urdf, srdf );
   moveit::core::RobotState state( robot_model );

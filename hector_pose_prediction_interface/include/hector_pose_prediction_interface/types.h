@@ -18,24 +18,26 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 
-#include <hector_stability_metrics/types.h>
+#include <hector_stability_metrics/math/types.h>
 #include <Eigen/Geometry>
 
 namespace hector_pose_prediction_interface
 {
-using hector_stability_metrics::Vector2;
-using hector_stability_metrics::Vector2f;
-using hector_stability_metrics::Vector2d;
-using hector_stability_metrics::Vector2List;
+namespace math
+{
+using hector_stability_metrics::math::Vector2;
+using hector_stability_metrics::math::Vector2f;
+using hector_stability_metrics::math::Vector2d;
+using hector_stability_metrics::math::Vector2List;
 
-using hector_stability_metrics::Vector3;
-using hector_stability_metrics::Vector3f;
-using hector_stability_metrics::Vector3d;
-using hector_stability_metrics::Vector3List;
+using hector_stability_metrics::math::Vector3;
+using hector_stability_metrics::math::Vector3f;
+using hector_stability_metrics::math::Vector3d;
+using hector_stability_metrics::math::Vector3List;
 
-using hector_stability_metrics::Isometry3;
-using hector_stability_metrics::Isometry3f;
-using hector_stability_metrics::Isometry3d;
+using hector_stability_metrics::math::Isometry3;
+using hector_stability_metrics::math::Isometry3f;
+using hector_stability_metrics::math::Isometry3d;
 
 template<typename Scalar>
 struct SupportPolygon
@@ -294,6 +296,7 @@ template<typename Scalar>
 Pose<Scalar> operator*( const Isometry3<Scalar> &transform, const Pose<Scalar> &pose )
 {
   return Pose<Scalar>( transform ) * pose;
+}
 }
 }  // namespace hector_pose_prediction_interface
 
