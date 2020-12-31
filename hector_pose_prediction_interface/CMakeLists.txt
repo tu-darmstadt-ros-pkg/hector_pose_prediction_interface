@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(hector_pose_prediction_interface)
+project(hector_pose_prediction_interface VERSION 0.8 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(catkin REQUIRED COMPONENTS hector_stability_metrics)
 find_package(Eigen3 REQUIRED)
@@ -15,7 +16,11 @@ catkin_package(
 ###########
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE include ${EIGEN3_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} INTERFACE
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
 
 #############
 ## Install ##
