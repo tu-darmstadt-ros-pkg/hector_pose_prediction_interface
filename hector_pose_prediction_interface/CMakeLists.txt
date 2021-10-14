@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.0.2)
 project(hector_pose_prediction_interface VERSION 0.8 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(catkin REQUIRED COMPONENTS hector_stability_metrics)
+find_package(catkin REQUIRED COMPONENTS hector_math hector_stability_metrics)
 find_package(Eigen3 REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS hector_stability_metrics
+  CATKIN_DEPENDS hector_math hector_stability_metrics
   DEPENDS EIGEN3
 )
 
@@ -41,7 +41,7 @@ install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
 
-  include_directories(${eigen_checks_INCLUDE_DIRS})
+  include_directories(${catkin_INCLUDE_DIRS})
   ## Add gtest based cpp test target and link libraries
   add_rostest_gtest(test_pose test/test_pose.test test/test_pose.cpp)
   target_link_libraries(test_pose ${PROJECT_NAME})

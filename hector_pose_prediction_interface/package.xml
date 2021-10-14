@@ -11,5 +11,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>hector_stability_metrics</build_depend>
+  <build_depend>hector_math</build_depend>
   <build_export_depend>hector_stability_metrics</build_export_depend>
+  <build_export_depend>hector_math</build_export_depend>
 </package>
