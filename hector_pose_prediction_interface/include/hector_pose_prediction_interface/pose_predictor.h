@@ -19,7 +19,7 @@
 #define HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 
 #include "hector_pose_prediction_interface/contact_information.h"
-#include "hector_pose_prediction_interface/robot_model.h"
+#include "hector_math/robot/robot_model.h"
 #include "hector_pose_prediction_interface/types.h"
 
 namespace hector_pose_prediction_interface
@@ -153,9 +153,9 @@ public:
     return doEstimateContactInformation( pose, support_polygon, contact_information, requested_contact_information );
   }
 
-  virtual typename RobotModel<Scalar>::Ptr robotModel() = 0;
+  virtual typename hector_math::RobotModel<Scalar>::Ptr robotModel() = 0;
 
-  virtual typename RobotModel<Scalar>::ConstPtr robotModel() const = 0;
+  virtual typename hector_math::RobotModel<Scalar>::ConstPtr robotModel() const = 0;
 
   virtual void updateSettings( const PosePredictorSettings<Scalar> &settings ) = 0;
 

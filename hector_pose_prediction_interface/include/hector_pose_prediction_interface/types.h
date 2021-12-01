@@ -18,7 +18,6 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 
-#include <hector_stability_metrics/math/types.h>
 #include <hector_math/types.h>
 #include <Eigen/Geometry>
 
@@ -26,19 +25,19 @@ namespace hector_pose_prediction_interface
 {
 namespace math
 {
-using hector_stability_metrics::math::Vector2;
-using hector_stability_metrics::math::Vector2f;
-using hector_stability_metrics::math::Vector2d;
-using hector_stability_metrics::math::Vector2List;
+using hector_math::Vector2;
+using hector_math::Vector2f;
+using hector_math::Vector2d;
+using hector_math::Vector2List;
 
-using hector_stability_metrics::math::Vector3;
-using hector_stability_metrics::math::Vector3f;
-using hector_stability_metrics::math::Vector3d;
-using hector_stability_metrics::math::Vector3List;
+using hector_math::Vector3;
+using hector_math::Vector3f;
+using hector_math::Vector3d;
+using hector_math::Vector3List;
 
-using hector_stability_metrics::math::Isometry3;
-using hector_stability_metrics::math::Isometry3f;
-using hector_stability_metrics::math::Isometry3d;
+using hector_math::Isometry3;
+using hector_math::Isometry3f;
+using hector_math::Isometry3d;
 
 template<typename Scalar>
 struct SupportPolygon

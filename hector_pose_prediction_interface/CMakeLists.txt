@@ -43,8 +43,8 @@ if (CATKIN_ENABLE_TESTING)
 
   include_directories(${catkin_INCLUDE_DIRS})
   ## Add gtest based cpp test target and link libraries
-  add_rostest_gtest(test_pose test/test_pose.test test/test_pose.cpp)
-  target_link_libraries(test_pose ${PROJECT_NAME})
+  #add_rostest_gtest(test_pose test/test_pose.test test/test_pose.cpp)
+  #target_link_libraries(test_pose ${PROJECT_NAME})
 
 endif()
 
