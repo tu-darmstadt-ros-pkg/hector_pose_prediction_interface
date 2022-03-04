@@ -1,26 +1,11 @@
-/*
- * Copyright (C) 2020  Stefan Fabian, Martin Oehler
- *
- * This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+// Copyright (c) 2020 Stefan Fabian, Martin Oehler. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 
-#include "hector_pose_prediction_interface/contact_information.h"
-#include "hector_math/robot/robot_model.h"
 #include "hector_pose_prediction_interface/types.h"
+#include "hector_math/robot/robot_model.h"
 
 namespace hector_pose_prediction_interface
 {
@@ -94,7 +79,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndContactInformation( math::Pose<Scalar> &pose, math::SupportPolygon<Scalar> &support_polygon,
+  Scalar predictPoseAndContactInformation( hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
                                            ContactInformation<Scalar> &contact_information,
                                            ContactInformationFlags requested_contact_information = contact_information_flags::All ) const
   {
@@ -110,7 +95,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndSupportPolygon( math::Pose<Scalar> &pose, math::SupportPolygon<Scalar> &support_polygon ) const
+  Scalar predictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) const
   {
     return doPredictPoseAndSupportPolygon( pose, support_polygon );
   }
@@ -121,7 +106,7 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPose( math::Pose<Scalar> &pose ) const { return doPredictPose( pose ); }
+  Scalar predictPose( hector_math::Pose<Scalar> &pose ) const { return doPredictPose( pose ); }
 
   /*!
    * Estimate the support polygon for a given pose.
@@ -130,7 +115,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  bool estimateSupportPolygon( const math::Pose<Scalar> &pose, math::SupportPolygon<Scalar> &support_polygon ) const
+  bool estimateSupportPolygon( const hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) const
   {
     return doEstimateSupportPolygon( pose, support_polygon );
   }
@@ -146,7 +131,7 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  bool estimateContactInformation( const math::Pose<Scalar> &pose, math::SupportPolygon<Scalar> &support_polygon,
+  bool estimateContactInformation( const hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
                                    ContactInformation<Scalar> &contact_information,
                                    ContactInformationFlags requested_contact_information = contact_information_flags::All ) const
   {
@@ -162,21 +147,21 @@ public:
   virtual const PosePredictorSettings<Scalar> &settings() const = 0;
 
 private:
-  virtual Scalar doPredictPoseAndContactInformation( math::Pose<Scalar> &pose,
-                                                     math::SupportPolygon<Scalar> &support_polygon,
+  virtual Scalar doPredictPoseAndContactInformation( hector_math::Pose<Scalar> &pose,
+                                                     SupportPolygon<Scalar> &support_polygon,
                                                      ContactInformation<Scalar> &contact_information,
                                                      ContactInformationFlags requested_contact_information ) const = 0;
 
-  virtual Scalar doPredictPoseAndSupportPolygon( math::Pose<Scalar> &pose,
-                                                 math::SupportPolygon<Scalar> &support_polygon ) const = 0;
+  virtual Scalar doPredictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose,
+                                                 SupportPolygon<Scalar> &support_polygon ) const = 0;
 
-  virtual Scalar doPredictPose( math::Pose<Scalar> &pose ) const = 0;
+  virtual Scalar doPredictPose( hector_math::Pose<Scalar> &pose ) const = 0;
 
-  virtual bool doEstimateSupportPolygon( const math::Pose<Scalar> &pose,
-                                         math::SupportPolygon<Scalar> &support_polygon ) const = 0;
+  virtual bool doEstimateSupportPolygon( const hector_math::Pose<Scalar> &pose,
+                                         SupportPolygon<Scalar> &support_polygon ) const = 0;
 
-  virtual bool doEstimateContactInformation( const math::Pose<Scalar> &pose,
-                                             math::SupportPolygon<Scalar> &support_polygon,
+  virtual bool doEstimateContactInformation( const hector_math::Pose<Scalar> &pose,
+                                             SupportPolygon<Scalar> &support_polygon,
                                              ContactInformation<Scalar> &contact_information,
                                              ContactInformationFlags requested_contact_information ) const = 0;
 };
