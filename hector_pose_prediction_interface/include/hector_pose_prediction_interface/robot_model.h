@@ -13,6 +13,6 @@ namespace hector_pose_prediction_interface
 
 using hector_math::RobotModel;
 
-}  // namespace hector_pose_prediction_interface
+} // namespace hector_pose_prediction_interface
 
-#endif  // HECTOR_POSE_PREDICTION_INTERFACE_ROBOT_MODEL_H
+#endif // HECTOR_POSE_PREDICTION_INTERFACE_ROBOT_MODEL_H

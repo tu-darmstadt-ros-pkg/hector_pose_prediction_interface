@@ -4,16 +4,14 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
 
-#include <hector_math/types.h>
 #include <Eigen/Geometry>
+#include <hector_math/types.h>
 
 namespace hector_pose_prediction_interface
 {
 
-
 template<typename Scalar>
-struct SupportPolygon
-{
+struct SupportPolygon {
   //! The convex hull of contact points making up the support polygon.
   hector_math::Vector3List<Scalar> contact_hull_points;
   //! The stability for each edge of the support polygon formed by the contact_hull_points.
@@ -23,8 +21,7 @@ struct SupportPolygon
 
 namespace contact_information_flags
 {
-enum ContactInformationFlags : unsigned short
-{
+enum ContactInformationFlags : unsigned short {
   None = 0,
   JointType = 0x1,
   Point = 0x2,
@@ -36,8 +33,7 @@ using ContactInformationFlags = contact_information_flags::ContactInformationFla
 
 namespace joint_types
 {
-enum JointType : unsigned int
-{
+enum JointType : unsigned int {
   Undefined = 0,
   Tracks = 1,
   Chassis = 2, // Note: Despite the pattern this is not a flags enum
@@ -49,54 +45,58 @@ enum JointType : unsigned int
 using JointType = joint_types::JointType;
 
 template<typename Scalar>
-struct ContactPointInformation
-{
+struct ContactPointInformation {
   hector_math::Vector3<Scalar> point;
   hector_math::Vector3<Scalar> surface_normal;
   JointType joint_type;
 };
 
 template<typename Scalar>
-struct ContactInformation
-{
-  std::vector<ContactPointInformation<Scalar> > contact_points;
+struct ContactInformation {
+  std::vector<ContactPointInformation<Scalar>> contact_points;
 };
 
 // Define operators for contact flags
 inline ContactInformationFlags operator&( ContactInformationFlags a, ContactInformationFlags b )
 {
-  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
+  return static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) &
+                                               static_cast<unsigned short>( b ) );
 }
 
 inline ContactInformationFlags operator|( ContactInformationFlags a, ContactInformationFlags b )
 {
-  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
+  return static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) |
+                                               static_cast<unsigned short>( b ) );
 }
 
 inline ContactInformationFlags operator^( ContactInformationFlags a, ContactInformationFlags b )
 {
-  return static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
+  return static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) ^
+                                               static_cast<unsigned short>( b ) );
 }
 
 inline ContactInformationFlags operator~( ContactInformationFlags a )
 {
-  return static_cast<ContactInformationFlags>(~static_cast<unsigned short>(a));
+  return static_cast<ContactInformationFlags>( ~static_cast<unsigned short>( a ) );
 }
 
 inline ContactInformationFlags &operator&=( ContactInformationFlags &a, ContactInformationFlags b )
 {
-  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) & static_cast<unsigned short>(b));
+  return a = static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) &
+                                                   static_cast<unsigned short>( b ) );
 }
 
 inline ContactInformationFlags &operator|=( ContactInformationFlags &a, ContactInformationFlags b )
 {
-  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) | static_cast<unsigned short>(b));
+  return a = static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) |
+                                                   static_cast<unsigned short>( b ) );
 }
 
 inline ContactInformationFlags &operator^=( ContactInformationFlags &a, ContactInformationFlags b )
 {
-  return a = static_cast<ContactInformationFlags>(static_cast<unsigned short>(a) ^ static_cast<unsigned short>(b));
+  return a = static_cast<ContactInformationFlags>( static_cast<unsigned short>( a ) ^
+                                                   static_cast<unsigned short>( b ) );
 }
-}  // namespace hector_pose_prediction_interface
+} // namespace hector_pose_prediction_interface
 
-#endif  // HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H
+#endif // HECTOR_POSE_PREDICTION_INTERFACE_TYPES_H

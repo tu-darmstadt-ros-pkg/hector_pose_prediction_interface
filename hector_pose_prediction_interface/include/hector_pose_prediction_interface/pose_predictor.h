@@ -4,19 +4,20 @@
 #ifndef HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 #define HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
 
-#include "hector_pose_prediction_interface/types.h"
 #include "hector_math/robot/robot_model.h"
+#include "hector_pose_prediction_interface/types.h"
 
 namespace hector_pose_prediction_interface
 {
 
 template<typename Scalar>
-struct PosePredictorSettings
-{
-  PosePredictorSettings( int maximum_iterations, Scalar contact_threshold, Scalar tip_over_threshold,
-                         bool fix_xy_coordinates = false )
-    : maximum_iterations( maximum_iterations ), contact_threshold( contact_threshold )
-      , tip_over_threshold( tip_over_threshold ), fix_xy_coordinates( fix_xy_coordinates ) { }
+struct PosePredictorSettings {
+  PosePredictorSettings( int maximum_iterations, Scalar contact_threshold,
+                         Scalar tip_over_threshold, bool fix_xy_coordinates = false )
+      : maximum_iterations( maximum_iterations ), contact_threshold( contact_threshold ),
+        tip_over_threshold( tip_over_threshold ), fix_xy_coordinates( fix_xy_coordinates )
+  {
+  }
 
   virtual ~PosePredictorSettings() = default;
 
@@ -24,19 +25,17 @@ struct PosePredictorSettings
   int maximum_iterations;
   //! The maximum distance in m for a potential contact point to be considered as in contact.
   Scalar contact_threshold;
-  //! The length in z-direction of the projected z-axis below which the robot is considered tipped over.
-  //! If the length in z-direction of the projected z-axis is smaller than this value
+  //! The length in z-direction of the projected z-axis below which the robot is considered tipped
+  //! over. If the length in z-direction of the projected z-axis is smaller than this value
   Scalar tip_over_threshold;
 
   //! If true the x-y position is kept fixed rather than being updated to reflect rotation induced translations
   //! of the robots origin. This may lead to slower convergence and even non-converging poses.
   bool fix_xy_coordinates;
 
-  //! Sets the tip over threshold from the given angle in radians between the z-axis and the projected z-axis of the robot orientation.
-  void setTipOverThresholdFromAngle( Scalar angle )
-  {
-    tip_over_threshold = ::std::cos( angle );
-  }
+  //! Sets the tip over threshold from the given angle in radians between the z-axis and the
+  //! projected z-axis of the robot orientation.
+  void setTipOverThresholdFromAngle( Scalar angle ) { tip_over_threshold = ::std::cos( angle ); }
 
   PosePredictorSettings<Scalar> &operator=( const PosePredictorSettings<Scalar> &other )
   {
@@ -46,6 +45,14 @@ struct PosePredictorSettings
     fix_xy_coordinates = other.fix_xy_coordinates;
     return *this;
   }
+};
+
+template<typename Scalar>
+struct Wrench {
+  //! External force acting on the COM. Default: Gravity of 9.81 in -Z direction
+  hector_math::Vector3<Scalar> force = hector_math::Vector3<Scalar>( 0, 0, -9.81 );
+  //! Torque acting on the COM
+  hector_math::Vector3<Scalar> torque = hector_math::Vector3<Scalar>( 0, 0, 0 );
 };
 
 /*!
@@ -61,8 +68,8 @@ template<typename Scalar>
 class PosePredictor
 {
 public:
-  using Ptr = std::shared_ptr<PosePredictor<Scalar> >;
-  using ConstPtr = std::shared_ptr<const PosePredictor<Scalar> >;
+  using Ptr = std::shared_ptr<PosePredictor<Scalar>>;
+  using ConstPtr = std::shared_ptr<const PosePredictor<Scalar>>;
 
   virtual ~PosePredictor<Scalar>() = default;
 
@@ -79,12 +86,14 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndContactInformation( hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
-                                           ContactInformation<Scalar> &contact_information,
-                                           ContactInformationFlags requested_contact_information = contact_information_flags::All ) const
+  Scalar predictPoseAndContactInformation(
+      hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+      ContactInformation<Scalar> &contact_information,
+      ContactInformationFlags requested_contact_information = contact_information_flags::All,
+      const Wrench<Scalar> &wrench = {} ) const
   {
     return doPredictPoseAndContactInformation( pose, support_polygon, contact_information,
-                                               requested_contact_information );
+                                               requested_contact_information, wrench );
   }
 
   /*!
@@ -95,9 +104,11 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) const
+  Scalar predictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose,
+                                       SupportPolygon<Scalar> &support_polygon,
+                                       const Wrench<Scalar> &wrench = {} ) const
   {
-    return doPredictPoseAndSupportPolygon( pose, support_polygon );
+    return doPredictPoseAndSupportPolygon( pose, support_polygon, wrench );
   }
 
   /*!
@@ -106,16 +117,20 @@ public:
    * @return A value indicating the stability where greater values mean higher stability and negative values or NaN
    *   indicate that there was no stable pose found.
    */
-  Scalar predictPose( hector_math::Pose<Scalar> &pose ) const { return doPredictPose( pose ); }
+  Scalar predictPose( hector_math::Pose<Scalar> &pose, const Wrench<Scalar> &wrench = {} ) const
+  {
+    return doPredictPose( pose, wrench );
+  }
 
   /*!
    * Estimate the support polygon for a given pose.
    * @param pose The pose of the robot.
    * @param support_polygon The estimated support polygon.
-   * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
-   *   contact points.
+   * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there
+   * were only one or two contact points.
    */
-  bool estimateSupportPolygon( const hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon ) const
+  bool estimateSupportPolygon( const hector_math::Pose<Scalar> &pose,
+                               SupportPolygon<Scalar> &support_polygon ) const
   {
     return doEstimateSupportPolygon( pose, support_polygon );
   }
@@ -131,11 +146,13 @@ public:
    * @return True if a valid support polygon was estimated, false, otherwise, e.g., because there were only one or two
    *   contact points.
    */
-  bool estimateContactInformation( const hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
-                                   ContactInformation<Scalar> &contact_information,
-                                   ContactInformationFlags requested_contact_information = contact_information_flags::All ) const
+  bool estimateContactInformation(
+      const hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+      ContactInformation<Scalar> &contact_information,
+      ContactInformationFlags requested_contact_information = contact_information_flags::All ) const
   {
-    return doEstimateContactInformation( pose, support_polygon, contact_information, requested_contact_information );
+    return doEstimateContactInformation( pose, support_polygon, contact_information,
+                                         requested_contact_information );
   }
 
   virtual typename hector_math::RobotModel<Scalar>::Ptr robotModel() = 0;
@@ -147,24 +164,29 @@ public:
   virtual const PosePredictorSettings<Scalar> &settings() const = 0;
 
 private:
-  virtual Scalar doPredictPoseAndContactInformation( hector_math::Pose<Scalar> &pose,
-                                                     SupportPolygon<Scalar> &support_polygon,
-                                                     ContactInformation<Scalar> &contact_information,
-                                                     ContactInformationFlags requested_contact_information ) const = 0;
+  virtual Scalar
+  doPredictPoseAndContactInformation( hector_math::Pose<Scalar> &pose,
+                                      SupportPolygon<Scalar> &support_polygon,
+                                      ContactInformation<Scalar> &contact_information,
+                                      ContactInformationFlags requested_contact_information,
+                                      const Wrench<Scalar> &wrench ) const = 0;
 
   virtual Scalar doPredictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose,
-                                                 SupportPolygon<Scalar> &support_polygon ) const = 0;
+                                                 SupportPolygon<Scalar> &support_polygon,
+                                                 const Wrench<Scalar> &wrench ) const = 0;
 
-  virtual Scalar doPredictPose( hector_math::Pose<Scalar> &pose ) const = 0;
+  virtual Scalar doPredictPose( hector_math::Pose<Scalar> &pose,
+                                const Wrench<Scalar> &wrench ) const = 0;
 
   virtual bool doEstimateSupportPolygon( const hector_math::Pose<Scalar> &pose,
                                          SupportPolygon<Scalar> &support_polygon ) const = 0;
 
-  virtual bool doEstimateContactInformation( const hector_math::Pose<Scalar> &pose,
-                                             SupportPolygon<Scalar> &support_polygon,
-                                             ContactInformation<Scalar> &contact_information,
-                                             ContactInformationFlags requested_contact_information ) const = 0;
+  virtual bool
+  doEstimateContactInformation( const hector_math::Pose<Scalar> &pose,
+                                SupportPolygon<Scalar> &support_polygon,
+                                ContactInformation<Scalar> &contact_information,
+                                ContactInformationFlags requested_contact_information ) const = 0;
 };
-}  // namespace hector_pose_prediction_interface
+} // namespace hector_pose_prediction_interface
 
-#endif  // HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H
+#endif // HECTOR_POSE_PREDICTION_INTERFACE_POSE_PREDICTOR_H

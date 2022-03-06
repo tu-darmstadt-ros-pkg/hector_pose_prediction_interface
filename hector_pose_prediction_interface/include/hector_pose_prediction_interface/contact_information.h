@@ -9,4 +9,4 @@ namespace hector_pose_prediction_interface
 {
 }  // namespace hector_pose_prediction_interface
 
-#endif  // HECTOR_POSE_PREDICTION_INTERFACE_CONTACT_INFORMATION_H
+#endif // HECTOR_POSE_PREDICTION_INTERFACE_CONTACT_INFORMATION_H
