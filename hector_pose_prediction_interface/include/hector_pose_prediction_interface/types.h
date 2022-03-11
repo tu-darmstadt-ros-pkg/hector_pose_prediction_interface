@@ -23,7 +23,7 @@ namespace contact_information_flags
 {
 enum ContactInformationFlags : unsigned short {
   None = 0,
-  JointType = 0x1,
+  LinkType = 0x1,
   Point = 0x2,
   SurfaceNormal = 0x4,
   All = 0xffff
