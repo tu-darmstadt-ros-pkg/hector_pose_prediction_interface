@@ -48,6 +48,7 @@ template<typename Scalar>
 struct ContactPointInformation {
   hector_math::Vector3<Scalar> point;
   hector_math::Vector3<Scalar> surface_normal;
+  Scalar surface_area; /// Surface area in m² covered by this point sample
   JointType joint_type;
 };
 
