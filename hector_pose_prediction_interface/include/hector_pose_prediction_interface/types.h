@@ -31,9 +31,9 @@ enum ContactInformationFlags : unsigned short {
 }
 using ContactInformationFlags = contact_information_flags::ContactInformationFlags;
 
-namespace joint_types
+namespace link_types
 {
-enum JointType : unsigned int {
+enum LinkType : unsigned int {
   Undefined = 0,
   Tracks = 1,
   Chassis = 2, // Note: Despite the pattern this is not a flags enum
@@ -42,14 +42,14 @@ enum JointType : unsigned int {
   Custom = 1024
 };
 }
-using JointType = joint_types::JointType;
+using LinkType = link_types::LinkType;
 
 template<typename Scalar>
 struct ContactPointInformation {
   hector_math::Vector3<Scalar> point;
   hector_math::Vector3<Scalar> surface_normal;
   Scalar surface_area; /// Surface area in m² covered by this point sample
-  JointType joint_type;
+  LinkType link_type;
 };
 
 template<typename Scalar>
