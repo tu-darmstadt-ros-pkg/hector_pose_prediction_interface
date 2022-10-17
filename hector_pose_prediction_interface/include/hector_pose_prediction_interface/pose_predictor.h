@@ -122,6 +122,12 @@ public:
     return doPredictPose( pose, wrench );
   }
 
+  Scalar tipOverAxis( hector_math::Pose<Scalar> &pose, SupportPolygon<Scalar> &support_polygon,
+                      size_t axis, const Wrench<Scalar> &wrench = {} ) const
+  {
+    return doTipOverAxis( pose, support_polygon, axis, wrench );
+  }
+
   /*!
    * Estimate the support polygon for a given pose.
    * @param pose The pose of the robot.
@@ -174,6 +180,13 @@ private:
   virtual Scalar doPredictPoseAndSupportPolygon( hector_math::Pose<Scalar> &pose,
                                                  SupportPolygon<Scalar> &support_polygon,
                                                  const Wrench<Scalar> &wrench ) const = 0;
+
+  virtual Scalar doTipOverAxis( hector_math::Pose<Scalar> &pose,
+                                SupportPolygon<Scalar> &support_polygon, size_t axis,
+                                const Wrench<Scalar> &wrench = {} ) const
+  {
+    throw std::runtime_error( "Not implemented" );
+  }
 
   virtual Scalar doPredictPose( hector_math::Pose<Scalar> &pose,
                                 const Wrench<Scalar> &wrench ) const = 0;
