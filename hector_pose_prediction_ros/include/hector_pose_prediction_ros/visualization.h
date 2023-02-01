@@ -11,10 +11,10 @@ namespace hector_pose_prediction_ros
 namespace visualization
 {
 template<typename Scalar>
-void drawSupportPolygonImpl( const hector_math::Vector3List<Scalar> &contact_hull_points,
+void drawSupportPolygonImpl( visualization_msgs::MarkerArray &marker_array,
+                             const hector_math::Vector3List<Scalar> &contact_hull_points,
                              const std::vector<std_msgs::ColorRGBA> &colors,
-                             const std::string &frame_id,
-                             visualization_msgs::MarkerArray &marker_array )
+                             const std::string &frame_id)
 {
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   for ( size_t i = 0; i < contact_hull_points.size(); i++ ) {
@@ -33,11 +33,11 @@ void drawSupportPolygonImpl( const hector_math::Vector3List<Scalar> &contact_hul
     marker.pose.orientation.w = 1.0;
 
     geometry_msgs::Point point_start;
-    tf::pointEigenToMsg( contact_hull_points[i], point_start );
+    tf::pointEigenToMsg( contact_hull_points[i].template cast<double>(), point_start );
     marker.points.push_back( point_start );
     int ip1 = ( i + 1 ) % contact_hull_points.size(); // wrap around
     geometry_msgs::Point point_end;
-    tf::pointEigenToMsg( contact_hull_points[ip1], point_end );
+    tf::pointEigenToMsg( contact_hull_points[ip1].template cast<double>(), point_end );
     marker.points.push_back( point_end );
     marker_array.markers.push_back( marker );
   }
@@ -58,7 +58,7 @@ void drawSupportPolygonWithStability( const hector_math::Vector3List<Scalar> &co
   for ( const auto &stability : edge_stabilities ) {
     Scalar clamped_stability =
         std::max( 0.0, std::min( stability, max_stability ) ); // Clamp to [0, max_stability]
-    float stability_pct = clamped_stability / max_stability;
+    auto stability_pct = static_cast<float>(clamped_stability / max_stability);
     std_msgs::ColorRGBA color;
     color.a = 1.0f;
     color.r = 1.0f - stability_pct;
@@ -66,7 +66,7 @@ void drawSupportPolygonWithStability( const hector_math::Vector3List<Scalar> &co
     color.b = 0.0f;
     colors.push_back( color );
   }
-  drawSupportPolygonImpl( contact_hull_points, colors, frame_id, marker_array );
+  drawSupportPolygonImpl( marker_array, contact_hull_points, colors, frame_id );
 }
 
 template<typename Scalar>
@@ -79,24 +79,26 @@ void drawSupportPolygon( const hector_math::Vector3List<Scalar> &contact_hull_po
   color_msg.g = color( 1 );
   color_msg.b = color( 2 );
   color_msg.a = color( 3 );
-  drawSupportPolygonImpl( contact_hull_points,
+  drawSupportPolygonImpl( marker_array, contact_hull_points,
                           std::vector<std_msgs::ColorRGBA>( contact_hull_points.size(), color_msg ),
-                          frame_id, marker_array );
+                          frame_id );
 }
 
 template<typename Scalar>
-void drawContactPoints( const hector_math::Vector3List<Scalar> &contact_points,
+void drawContactPoints( visualization_msgs::MarkerArray &marker_array,
+                        const hector_math::Vector3List<Scalar> &contact_points,
                         Eigen::Vector4f color, const std::string &frame_id, const std::string &ns,
-                        visualization_msgs::MarkerArray &marker_array )
+                        double size = 0.04
+                         )
 {
   marker_array.markers.reserve( marker_array.markers.size() + contact_points.size() );
   for ( size_t i = 0; i < contact_points.size(); i++ ) {
     visualization_msgs::Marker marker;
     marker.type = visualization_msgs::Marker::SPHERE;
     marker.action = visualization_msgs::Marker::ADD;
-    marker.scale.x = 0.04;
-    marker.scale.y = 0.04;
-    marker.scale.z = 0.04;
+    marker.scale.x = size;
+    marker.scale.y = size;
+    marker.scale.z = size;
     marker.color.r = color( 0 );
     marker.color.g = color( 1 );
     marker.color.b = color( 2 );
@@ -107,16 +109,17 @@ void drawContactPoints( const hector_math::Vector3List<Scalar> &contact_points,
     marker.id = static_cast<int32_t>( i );
 
     Eigen::Isometry3d marker_pose = Eigen::Isometry3d::Identity();
-    marker_pose.translation() = contact_points[i];
+    marker_pose.translation() = contact_points[i].template cast<double>();
     tf::poseEigenToMsg( marker_pose, marker.pose );
     marker_array.markers.push_back( marker );
   }
 }
 
 template<typename Scalar>
-void drawContactNormals( const hector_math::Vector3List<Scalar> &contact_points,
+void drawContactNormals( visualization_msgs::MarkerArray &marker_array,
+                         const hector_math::Vector3List<Scalar> &contact_points,
                          const hector_math::Vector3List<Scalar> &normals, const std::string &frame_id,
-                         const std::string &ns, visualization_msgs::MarkerArray &marker_array )
+                         const std::string &ns  )
 {
   if ( contact_points.size() != normals.size() ) {
     return;
@@ -138,11 +141,11 @@ void drawContactNormals( const hector_math::Vector3List<Scalar> &contact_points,
     marker.pose.orientation.w = 1.0;
 
     geometry_msgs::Point point_start_msg;
-    tf::pointEigenToMsg( contact_points[i], point_start_msg );
+    tf::pointEigenToMsg( contact_points[i].template cast<double>(), point_start_msg );
     marker.points.push_back( point_start_msg );
 
     double normals_scale = 0.1;
-    Eigen::Vector3d point_end = contact_points[i] + normals_scale * normals[i];
+    Eigen::Vector3d point_end = contact_points[i].template cast<double>() + normals_scale * normals[i].template cast<double>();
     geometry_msgs::Point point_end_msg;
     tf::pointEigenToMsg( point_end, point_end_msg );
     marker.points.push_back( point_end_msg );
