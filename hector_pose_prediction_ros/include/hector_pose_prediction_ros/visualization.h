@@ -5,6 +5,7 @@
 #include <hector_math/types.h>
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <hector_pose_prediction_interface/types.h>
 
 namespace hector_pose_prediction_ros
 {
@@ -14,7 +15,7 @@ template<typename Scalar>
 void drawSupportPolygonImpl( visualization_msgs::MarkerArray &marker_array,
                              const hector_math::Vector3List<Scalar> &contact_hull_points,
                              const std::vector<std_msgs::ColorRGBA> &colors,
-                             const std::string &frame_id)
+                             const std::string &frame_id, const std::string &ns)
 {
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   for ( size_t i = 0; i < contact_hull_points.size(); i++ ) {
@@ -27,7 +28,7 @@ void drawSupportPolygonImpl( visualization_msgs::MarkerArray &marker_array,
 
     marker.color = colors[i];
     marker.header.frame_id = frame_id;
-    marker.ns = "support_polygon";
+    marker.ns = ns;
     marker.id = static_cast<int32_t>( i );
 
     marker.pose.orientation.w = 1.0;
@@ -44,10 +45,27 @@ void drawSupportPolygonImpl( visualization_msgs::MarkerArray &marker_array,
 }
 
 template<typename Scalar>
-void drawSupportPolygonWithStability( const hector_math::Vector3List<Scalar> &contact_hull_points,
+void drawSupportPolygon( visualization_msgs::MarkerArray &marker_array,
+                         const hector_math::Vector3List<Scalar> &contact_hull_points,
+                         Eigen::Vector4f color, const std::string &frame_id, const std::string &ns
+                          )
+{
+  std_msgs::ColorRGBA color_msg;
+  color_msg.r = color( 0 );
+  color_msg.g = color( 1 );
+  color_msg.b = color( 2 );
+  color_msg.a = color( 3 );
+  drawSupportPolygonImpl( marker_array, contact_hull_points,
+                          std::vector<std_msgs::ColorRGBA>( contact_hull_points.size(), color_msg ),
+                          frame_id , ns);
+}
+
+template<typename Scalar>
+void drawSupportPolygonWithStability( visualization_msgs::MarkerArray &marker_array,
+                                      const hector_math::Vector3List<Scalar> &contact_hull_points,
                                       const hector_math::Vector3List<Scalar> &edge_stabilities,
-                                      Scalar max_stability, const std::string &frame_id,
-                                      visualization_msgs::MarkerArray &marker_array )
+                                      Scalar max_stability, const std::string &frame_id, const std::string &ns
+                                       )
 {
   if ( contact_hull_points.size() != edge_stabilities.size() ) {
     return;
@@ -66,22 +84,7 @@ void drawSupportPolygonWithStability( const hector_math::Vector3List<Scalar> &co
     color.b = 0.0f;
     colors.push_back( color );
   }
-  drawSupportPolygonImpl( marker_array, contact_hull_points, colors, frame_id );
-}
-
-template<typename Scalar>
-void drawSupportPolygon( const hector_math::Vector3List<Scalar> &contact_hull_points,
-                         Eigen::Vector4f color, const std::string &frame_id,
-                         visualization_msgs::MarkerArray &marker_array )
-{
-  std_msgs::ColorRGBA color_msg;
-  color_msg.r = color( 0 );
-  color_msg.g = color( 1 );
-  color_msg.b = color( 2 );
-  color_msg.a = color( 3 );
-  drawSupportPolygonImpl( marker_array, contact_hull_points,
-                          std::vector<std_msgs::ColorRGBA>( contact_hull_points.size(), color_msg ),
-                          frame_id );
+  drawSupportPolygonImpl( marker_array, contact_hull_points, colors, frame_id, ns);
 }
 
 template<typename Scalar>
@@ -119,7 +122,8 @@ template<typename Scalar>
 void drawContactNormals( visualization_msgs::MarkerArray &marker_array,
                          const hector_math::Vector3List<Scalar> &contact_points,
                          const hector_math::Vector3List<Scalar> &normals, const std::string &frame_id,
-                         const std::string &ns  )
+                         const std::string &ns,
+                         double normals_scale = 0.1)
 {
   if ( contact_points.size() != normals.size() ) {
     return;
@@ -144,7 +148,6 @@ void drawContactNormals( visualization_msgs::MarkerArray &marker_array,
     tf::pointEigenToMsg( contact_points[i].template cast<double>(), point_start_msg );
     marker.points.push_back( point_start_msg );
 
-    double normals_scale = 0.1;
     Eigen::Vector3d point_end = contact_points[i].template cast<double>() + normals_scale * normals[i].template cast<double>();
     geometry_msgs::Point point_end_msg;
     tf::pointEigenToMsg( point_end, point_end_msg );
@@ -161,6 +164,55 @@ void drawContactNormals( visualization_msgs::MarkerArray &marker_array,
 
     marker_array.markers.push_back( marker );
   }
+}
+
+// Convenience functions
+
+template <typename Scalar>
+void drawFullSupportPolygon(visualization_msgs::MarkerArray &marker_array,
+                             const hector_pose_prediction_interface::SupportPolygon<Scalar>& support_polygon,
+                             const std::string& frame_id)
+{
+  // Draw Polygon with stability if available
+  if (support_polygon.edge_stabilities.empty()) {
+    drawSupportPolygon(marker_array, support_polygon.contact_hull_points, Eigen::Vector4f(0.0f, 1.0f, 0.0f, 1.0f), frame_id, "support_polygon");
+  } else {
+    drawSupportPolygonWithStability(marker_array, support_polygon.contact_hull_points, support_polygon.edge_stabilities, 6.0, frame_id, "support_polygon");
+  }
+  // Draw convex hull points
+  drawContactPoints(marker_array, support_polygon.contact_hull_points, Eigen::Vector4f(0, 1, 0, 1), frame_id, "support_polygon_points", 0.04);
+}
+
+template <typename Scalar>
+void drawFullContactInformation(visualization_msgs::MarkerArray &marker_array,
+                                 const hector_pose_prediction_interface::ContactInformation<Scalar>& contact_information,
+                                 const std::string& frame_id)
+{
+  // Collect data
+  hector_math::Vector3List<Scalar> contact_points;
+  contact_points.reserve(contact_information.contact_points.size());
+  hector_math::Vector3List<Scalar> normals;
+  normals.reserve(contact_information.contact_points.size());
+  for (const auto& contact_point: contact_information.contact_points) {
+    contact_points.push_back(contact_point.point);
+    contact_points.push_back(contact_point.surface_normal);
+  }
+  // Draw contact points
+  drawContactPoints(marker_array, contact_points, Eigen::Vector4f(1.0f, 0.5f, 0, 1.0f), frame_id, "contact_points", 0.03);
+  // Draw contact normals
+  drawContactNormals(marker_array, contact_points, normals, frame_id, "surface_normals", 0.1);
+}
+
+template <typename Scalar>
+void drawFullSupportPolygonWithContactInformation(visualization_msgs::MarkerArray &marker_array,
+                                                   const hector_pose_prediction_interface::SupportPolygon<Scalar>& support_polygon,
+                                                   const hector_pose_prediction_interface::ContactInformation<Scalar>& contact_information,
+                                                   const std::string& frame_id)
+{
+  // Draw support polygon
+  drawFullSupportPolygon(marker_array, support_polygon, frame_id);
+  // Draw contact information
+  drawFullContactInformation(marker_array, support_polygon, contact_information, frame_id);
 }
 
 } // namespace visualization
