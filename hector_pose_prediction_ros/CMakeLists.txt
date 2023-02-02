@@ -5,12 +5,16 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   hector_pose_prediction_interface
+  hector_math
+  visualization_msgs
+  eigen_conversions
 )
 
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES hector_pose_prediction_ros
  CATKIN_DEPENDS hector_pose_prediction_interface
+ CATKIN_DEPENDS hector_pose_prediction_interface hector_math visualization_msgs eigen_conversions
 )
 
 ###########
