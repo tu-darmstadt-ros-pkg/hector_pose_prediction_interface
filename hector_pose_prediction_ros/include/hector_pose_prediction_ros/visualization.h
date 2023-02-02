@@ -119,7 +119,7 @@ template<typename Scalar>
 void drawContactNormals( visualization_msgs::MarkerArray &marker_array,
                          const hector_math::Vector3List<Scalar> &contact_points,
                          const hector_math::Vector3List<Scalar> &normals, const std::string &frame_id,
-                         const std::string &ns, double normals_scale = 0.1 )
+                         const std::string &ns, double normals_scale = 0.05 )
 {
   if ( contact_points.size() != normals.size() ) {
     return;
@@ -204,7 +204,7 @@ void drawFullContactInformation(
   drawContactPoints( marker_array, contact_points, Eigen::Vector4f( 1.0f, 0.5f, 0, 1.0f ), frame_id,
                      "contact_points", 0.03 );
   // Draw contact normals
-  drawContactNormals( marker_array, contact_points, normals, frame_id, "surface_normals", 0.1 );
+  drawContactNormals( marker_array, contact_points, normals, frame_id, "surface_normals");
 }
 
 template<typename Scalar>
