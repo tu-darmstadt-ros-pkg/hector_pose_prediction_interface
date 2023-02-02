@@ -62,7 +62,7 @@ void drawSupportPolygon( visualization_msgs::MarkerArray &marker_array,
 template<typename Scalar>
 void drawSupportPolygonWithStability( visualization_msgs::MarkerArray &marker_array,
                                       const hector_math::Vector3List<Scalar> &contact_hull_points,
-                                      const hector_math::Vector3List<Scalar> &edge_stabilities,
+                                      const std::vector<Scalar> &edge_stabilities,
                                       Scalar max_stability, const std::string &frame_id,
                                       const std::string &ns )
 {
