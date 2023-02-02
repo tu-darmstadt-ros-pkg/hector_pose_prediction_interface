@@ -198,7 +198,7 @@ void drawFullContactInformation(
   normals.reserve( contact_information.contact_points.size() );
   for ( const auto &contact_point : contact_information.contact_points ) {
     contact_points.push_back( contact_point.point );
-    contact_points.push_back( contact_point.surface_normal );
+    normals.push_back( contact_point.surface_normal );
   }
   // Draw contact points
   drawContactPoints( marker_array, contact_points, Eigen::Vector4f( 1.0f, 0.5f, 0, 1.0f ), frame_id,
@@ -217,7 +217,7 @@ void drawFullSupportPolygonWithContactInformation(
   // Draw support polygon
   drawFullSupportPolygon( marker_array, support_polygon, frame_id );
   // Draw contact information
-  drawFullContactInformation( marker_array, support_polygon, contact_information, frame_id );
+  drawFullContactInformation( marker_array, contact_information, frame_id );
 }
 
 } // namespace visualization
