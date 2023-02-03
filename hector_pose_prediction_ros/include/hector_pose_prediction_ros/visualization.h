@@ -8,7 +8,7 @@
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
 
-namespace hector_pose_prediction_ros
+namespace hector_pose_prediction_interface
 {
 namespace visualization
 {
@@ -215,6 +215,6 @@ void addSupportPolygonWithContactInformationToMarkerArray(
 }
 
 } // namespace visualization
-} // namespace hector_pose_prediction_ros
+} // namespace hector_pose_prediction_interface
 
 #endif
