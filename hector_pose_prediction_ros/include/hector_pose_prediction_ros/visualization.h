@@ -65,7 +65,7 @@ void addSupportPolygonEdgesWithStabilityToMarkerArray( visualization_msgs::Marke
                                       const std::string &ns )
 {
   if ( contact_hull_points.size() != edge_stabilities.size() ) {
-    return;
+    throw std::invalid_argument("Size of contact_hull_points does not match edge_stabilities");
   }
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   std::vector<std_msgs::ColorRGBA> colors;
@@ -119,7 +119,7 @@ void addContactNormalsToMarkerArray( visualization_msgs::MarkerArray &marker_arr
                          const std::string &ns, double normals_scale = 0.05 )
 {
   if ( contact_points.size() != normals.size() ) {
-    return;
+    throw std::invalid_argument("Size of contact_points does not match normals");
   }
   marker_array.markers.reserve( marker_array.markers.size() + contact_points.size() );
   for ( size_t i = 0; i < contact_points.size(); ++i ) {
