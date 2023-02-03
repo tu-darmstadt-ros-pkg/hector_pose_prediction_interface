@@ -18,6 +18,11 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
                                           const std::vector<std_msgs::ColorRGBA> &edge_colors,
                                           const std::string &frame_id, const std::string &ns )
 {
+  if ( contact_hull_points.size() != edge_colors.size() ) {
+    throw std::invalid_argument(
+        "Size of contact_hull_points (" + std::to_string( contact_hull_points.size() ) +
+        ") does not match edge_colors (" + std::to_string( edge_colors.size() ) + ")" );
+  }
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   for ( size_t i = 0; i < contact_hull_points.size(); i++ ) {
     visualization_msgs::Marker marker;
