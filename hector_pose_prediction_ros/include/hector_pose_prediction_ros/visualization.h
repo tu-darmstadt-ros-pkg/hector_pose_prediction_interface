@@ -23,16 +23,16 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
     visualization_msgs::Marker marker;
     marker.type = visualization_msgs::Marker::ARROW;
     marker.action = visualization_msgs::Marker::ADD;
-    marker.scale.x = 0.02;
-    marker.scale.y = 0.00001;
-    marker.scale.z = 0.00001;
+    marker.scale.x = 0.02; // edge diameter
+    marker.scale.y = 0.00001; // head diameter, small value so it is not visible
+    marker.scale.z = 0.00001; // head length, small value so it is not visible
 
     marker.color = edge_colors[i];
     marker.header.frame_id = frame_id;
     marker.ns = ns;
     marker.id = static_cast<int32_t>( i );
 
-    marker.pose.orientation.w = 1.0;
+    marker.pose.orientation.w = 1.0; // Identity pose
 
     geometry_msgs::Point point_start = hector_math::vectorToPointMsg(contact_hull_points[i].template cast<double>());
     marker.points.push_back( point_start );
@@ -134,8 +134,7 @@ void addContactNormalsToMarkerArray( visualization_msgs::MarkerArray &marker_arr
     marker.ns = ns;
     marker.id = static_cast<int32_t>( i );
 
-    // Identity
-    marker.pose.orientation.w = 1.0;
+    marker.pose.orientation.w = 1.0; // Identity pose
 
     geometry_msgs::Point point_start_msg = hector_math::vectorToPointMsg(contact_points[i].template cast<double>());
     marker.points.push_back( point_start_msg );
