@@ -15,6 +15,6 @@
   <build_export_depend>hector_math</build_export_depend>
   <build_depend>visualization_msgs</build_depend>
   <build_export_depend>visualization_msgs</build_export_depend>
-  <build_depend>eigen_conversions</build_depend>
-  <build_export_depend>eigen_conversions</build_export_depend>
+  <build_depend>hector_math_ros</build_depend>
+  <build_export_depend>hector_math_ros</build_export_depend>
 </package>

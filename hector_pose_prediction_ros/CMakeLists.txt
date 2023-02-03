@@ -7,13 +7,13 @@ find_package(catkin REQUIRED COMPONENTS
   hector_pose_prediction_interface
   hector_math
   visualization_msgs
-  eigen_conversions
+  hector_math_ros
 )
 
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES hector_pose_prediction_ros
- CATKIN_DEPENDS hector_pose_prediction_interface hector_math visualization_msgs eigen_conversions
+  CATKIN_DEPENDS hector_pose_prediction_interface hector_math visualization_msgs hector_math_ros
 )
 
 ###########

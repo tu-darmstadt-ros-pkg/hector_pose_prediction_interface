@@ -1,8 +1,8 @@
 #ifndef HECTOR_POSE_PREDICTION_ROS_VISUALIZATION_H
 #define HECTOR_POSE_PREDICTION_ROS_VISUALIZATION_H
 
-#include <eigen_conversions/eigen_msg.h>
 #include <hector_math/types.h>
+#include <hector_math_ros/message_conversions/geometry_msgs.h>
 #include <hector_pose_prediction_interface/types.h>
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -33,12 +33,10 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
 
     marker.pose.orientation.w = 1.0;
 
-    geometry_msgs::Point point_start;
-    tf::pointEigenToMsg( contact_hull_points[i].template cast<double>(), point_start );
+    geometry_msgs::Point point_start = hector_math::vectorToPointMsg(contact_hull_points[i].template cast<double>());
     marker.points.push_back( point_start );
     int ip1 = ( i + 1 ) % contact_hull_points.size(); // wrap around
-    geometry_msgs::Point point_end;
-    tf::pointEigenToMsg( contact_hull_points[ip1].template cast<double>(), point_end );
+    geometry_msgs::Point point_end = hector_math::vectorToPointMsg(contact_hull_points[ip1].template cast<double>());
     marker.points.push_back( point_end );
     marker_array.markers.push_back( marker );
   }
@@ -108,9 +106,8 @@ void addContactPointsToMarkerArray( visualization_msgs::MarkerArray &marker_arra
     marker.ns = ns;
     marker.id = static_cast<int32_t>( i );
 
-    Eigen::Isometry3d marker_pose = Eigen::Isometry3d::Identity();
-    marker_pose.translation() = contact_points[i].template cast<double>();
-    tf::poseEigenToMsg( marker_pose, marker.pose );
+    hector_math::Pose<double> marker_pose = hector_math::Pose<double>::Translation(contact_points[i].template cast<double>());
+    marker.pose = hector_math::poseToPoseMsg(marker_pose);
     marker_array.markers.push_back( marker );
   }
 }
@@ -140,14 +137,12 @@ void addContactNormalsToMarkerArray( visualization_msgs::MarkerArray &marker_arr
     // Identity
     marker.pose.orientation.w = 1.0;
 
-    geometry_msgs::Point point_start_msg;
-    tf::pointEigenToMsg( contact_points[i].template cast<double>(), point_start_msg );
+    geometry_msgs::Point point_start_msg = hector_math::vectorToPointMsg(contact_points[i].template cast<double>());
     marker.points.push_back( point_start_msg );
 
     Eigen::Vector3d point_end = contact_points[i].template cast<double>() +
                                 normals_scale * normals[i].template cast<double>();
-    geometry_msgs::Point point_end_msg;
-    tf::pointEigenToMsg( point_end, point_end_msg );
+    geometry_msgs::Point point_end_msg = hector_math::vectorToPointMsg(point_end);
     marker.points.push_back( point_end_msg );
 
     // Determine color based on angle between normal and (inverted) gravity vector
