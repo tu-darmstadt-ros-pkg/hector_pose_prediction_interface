@@ -99,10 +99,10 @@ void addContactPointsToMarkerArray( visualization_msgs::MarkerArray &marker_arra
     marker.scale.x = size;
     marker.scale.y = size;
     marker.scale.z = size;
-    marker.point_color.r = point_color( 0 );
-    marker.point_color.g = point_color( 1 );
-    marker.point_color.b = point_color( 2 );
-    marker.point_color.a = point_color( 3 );
+    marker.color.r = point_color( 0 );
+    marker.color.g = point_color( 1 );
+    marker.color.b = point_color( 2 );
+    marker.color.a = point_color( 3 );
 
     marker.header.frame_id = frame_id;
     marker.ns = ns;
