@@ -2,6 +2,7 @@
 #define HECTOR_POSE_PREDICTION_ROS_VISUALIZATION_H
 
 #include <hector_math/types.h>
+#include <hector_math/math/operations.h>
 #include <hector_math_ros/message_conversions/geometry_msgs.h>
 #include <hector_pose_prediction_interface/types.h>
 #include <std_msgs/ColorRGBA.h>
@@ -71,8 +72,7 @@ void addSupportPolygonEdgesWithStabilityToMarkerArray( visualization_msgs::Marke
   std::vector<std_msgs::ColorRGBA> colors;
   colors.reserve( contact_hull_points.size() );
   for ( const auto &stability : edge_stabilities ) {
-    Scalar clamped_stability =
-        std::max( 0.0, std::min( stability, max_stability ) ); // Clamp to [0, max_stability]
+    Scalar clamped_stability = hector_math::clamp(stability,0.0, max_stability);
     auto stability_pct = static_cast<float>( clamped_stability / max_stability );
     std_msgs::ColorRGBA color;
     color.a = 1.0f;
