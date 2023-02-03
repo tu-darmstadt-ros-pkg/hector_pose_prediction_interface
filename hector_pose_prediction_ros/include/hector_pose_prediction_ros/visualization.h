@@ -1,8 +1,8 @@
 #ifndef HECTOR_POSE_PREDICTION_ROS_VISUALIZATION_H
 #define HECTOR_POSE_PREDICTION_ROS_VISUALIZATION_H
 
-#include <hector_math/types.h>
 #include <hector_math/math/operations.h>
+#include <hector_math/types.h>
 #include <hector_math_ros/message_conversions/geometry_msgs.h>
 #include <hector_pose_prediction_interface/types.h>
 #include <std_msgs/ColorRGBA.h>
@@ -14,16 +14,16 @@ namespace visualization
 {
 template<typename Scalar>
 void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marker_array,
-                             const hector_math::Vector3List<Scalar> &contact_hull_points,
-                             const std::vector<std_msgs::ColorRGBA> &edge_colors,
-                             const std::string &frame_id, const std::string &ns )
+                                          const hector_math::Vector3List<Scalar> &contact_hull_points,
+                                          const std::vector<std_msgs::ColorRGBA> &edge_colors,
+                                          const std::string &frame_id, const std::string &ns )
 {
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   for ( size_t i = 0; i < contact_hull_points.size(); i++ ) {
     visualization_msgs::Marker marker;
     marker.type = visualization_msgs::Marker::ARROW;
     marker.action = visualization_msgs::Marker::ADD;
-    marker.scale.x = 0.02; // edge diameter
+    marker.scale.x = 0.02;    // edge diameter
     marker.scale.y = 0.00001; // head diameter, small value so it is not visible
     marker.scale.z = 0.00001; // head length, small value so it is not visible
 
@@ -34,10 +34,12 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
 
     marker.pose.orientation.w = 1.0; // Identity pose
 
-    geometry_msgs::Point point_start = hector_math::vectorToPointMsg(contact_hull_points[i].template cast<double>());
+    geometry_msgs::Point point_start =
+        hector_math::vectorToPointMsg( contact_hull_points[i].template cast<double>() );
     marker.points.push_back( point_start );
     int ip1 = ( i + 1 ) % contact_hull_points.size(); // wrap around
-    geometry_msgs::Point point_end = hector_math::vectorToPointMsg(contact_hull_points[ip1].template cast<double>());
+    geometry_msgs::Point point_end =
+        hector_math::vectorToPointMsg( contact_hull_points[ip1].template cast<double>() );
     marker.points.push_back( point_end );
     marker_array.markers.push_back( marker );
   }
@@ -45,8 +47,9 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
 
 template<typename Scalar>
 void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marker_array,
-                         const hector_math::Vector3List<Scalar> &contact_hull_points,
-                         Eigen::Vector4f edge_color, const std::string &frame_id, const std::string &ns )
+                                          const hector_math::Vector3List<Scalar> &contact_hull_points,
+                                          Eigen::Vector4f edge_color, const std::string &frame_id,
+                                          const std::string &ns )
 {
   std_msgs::ColorRGBA color_msg;
   color_msg.r = edge_color( 0 );
@@ -59,20 +62,20 @@ void addSupportPolygonEdgesToMarkerArray( visualization_msgs::MarkerArray &marke
 }
 
 template<typename Scalar>
-void addSupportPolygonEdgesWithStabilityToMarkerArray( visualization_msgs::MarkerArray &marker_array,
-                                      const hector_math::Vector3List<Scalar> &contact_hull_points,
-                                      const std::vector<Scalar> &edge_stabilities,
-                                      Scalar max_stability, const std::string &frame_id,
-                                      const std::string &ns )
+void addSupportPolygonEdgesWithStabilityToMarkerArray(
+    visualization_msgs::MarkerArray &marker_array,
+    const hector_math::Vector3List<Scalar> &contact_hull_points,
+    const std::vector<Scalar> &edge_stabilities, Scalar max_stability, const std::string &frame_id,
+    const std::string &ns )
 {
   if ( contact_hull_points.size() != edge_stabilities.size() ) {
-    throw std::invalid_argument("Size of contact_hull_points does not match edge_stabilities");
+    throw std::invalid_argument( "Size of contact_hull_points does not match edge_stabilities" );
   }
   marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
   std::vector<std_msgs::ColorRGBA> colors;
   colors.reserve( contact_hull_points.size() );
   for ( const auto &stability : edge_stabilities ) {
-    Scalar clamped_stability = hector_math::clamp(stability,0.0, max_stability);
+    Scalar clamped_stability = hector_math::clamp( stability, 0.0, max_stability );
     auto stability_pct = static_cast<float>( clamped_stability / max_stability );
     std_msgs::ColorRGBA color;
     color.a = 1.0f;
@@ -86,8 +89,9 @@ void addSupportPolygonEdgesWithStabilityToMarkerArray( visualization_msgs::Marke
 
 template<typename Scalar>
 void addContactPointsToMarkerArray( visualization_msgs::MarkerArray &marker_array,
-                        const hector_math::Vector3List<Scalar> &contact_points, Eigen::Vector4f point_color,
-                        const std::string &frame_id, const std::string &ns, double size = 0.04 )
+                                    const hector_math::Vector3List<Scalar> &contact_points,
+                                    Eigen::Vector4f point_color, const std::string &frame_id,
+                                    const std::string &ns, double size = 0.04 )
 {
   marker_array.markers.reserve( marker_array.markers.size() + contact_points.size() );
   for ( size_t i = 0; i < contact_points.size(); i++ ) {
@@ -106,20 +110,22 @@ void addContactPointsToMarkerArray( visualization_msgs::MarkerArray &marker_arra
     marker.ns = ns;
     marker.id = static_cast<int32_t>( i );
 
-    hector_math::Pose<double> marker_pose = hector_math::Pose<double>::Translation(contact_points[i].template cast<double>());
-    marker.pose = hector_math::poseToPoseMsg(marker_pose);
+    hector_math::Pose<double> marker_pose =
+        hector_math::Pose<double>::Translation( contact_points[i].template cast<double>() );
+    marker.pose = hector_math::poseToPoseMsg( marker_pose );
     marker_array.markers.push_back( marker );
   }
 }
 
 template<typename Scalar>
 void addContactNormalsToMarkerArray( visualization_msgs::MarkerArray &marker_array,
-                         const hector_math::Vector3List<Scalar> &contact_points,
-                         const hector_math::Vector3List<Scalar> &normals, const std::string &frame_id,
-                         const std::string &ns, double normals_scale = 0.05 )
+                                     const hector_math::Vector3List<Scalar> &contact_points,
+                                     const hector_math::Vector3List<Scalar> &normals,
+                                     const std::string &frame_id, const std::string &ns,
+                                     double normals_scale = 0.05 )
 {
   if ( contact_points.size() != normals.size() ) {
-    throw std::invalid_argument("Size of contact_points does not match normals");
+    throw std::invalid_argument( "Size of contact_points does not match normals" );
   }
   marker_array.markers.reserve( marker_array.markers.size() + contact_points.size() );
   for ( size_t i = 0; i < contact_points.size(); ++i ) {
@@ -136,12 +142,13 @@ void addContactNormalsToMarkerArray( visualization_msgs::MarkerArray &marker_arr
 
     marker.pose.orientation.w = 1.0; // Identity pose
 
-    geometry_msgs::Point point_start_msg = hector_math::vectorToPointMsg(contact_points[i].template cast<double>());
+    geometry_msgs::Point point_start_msg =
+        hector_math::vectorToPointMsg( contact_points[i].template cast<double>() );
     marker.points.push_back( point_start_msg );
 
     Eigen::Vector3d point_end = contact_points[i].template cast<double>() +
                                 normals_scale * normals[i].template cast<double>();
-    geometry_msgs::Point point_end_msg = hector_math::vectorToPointMsg(point_end);
+    geometry_msgs::Point point_end_msg = hector_math::vectorToPointMsg( point_end );
     marker.points.push_back( point_end_msg );
 
     // Determine color based on angle between normal and (inverted) gravity vector
