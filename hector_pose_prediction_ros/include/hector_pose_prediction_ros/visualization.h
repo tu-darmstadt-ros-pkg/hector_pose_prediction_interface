@@ -7,6 +7,7 @@
 #include <hector_pose_prediction_interface/types.h>
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <sstream>
 
 namespace hector_pose_prediction_interface
 {
@@ -92,6 +93,47 @@ void addSupportPolygonEdgesWithStabilityToMarkerArray(
     colors.push_back( color );
   }
   addSupportPolygonEdgesToMarkerArray( marker_array, contact_hull_points, colors, frame_id, ns );
+}
+
+template<typename Scalar>
+void addEdgeStabilitiesTextToMarkerArray(
+    visualization_msgs::MarkerArray &marker_array,
+    const hector_math::Vector3List<Scalar> &contact_hull_points,
+    const std::vector<Scalar> &edge_stabilities, const std::string &frame_id,
+    const std::string &ns )
+{
+  if ( contact_hull_points.size() != edge_stabilities.size() ) {
+    throw std::invalid_argument(
+        "Size of contact_hull_points (" + std::to_string( contact_hull_points.size() ) +
+        ") does not match edge_stabilities (" + std::to_string( edge_stabilities.size() ) + ")" );
+  }
+  marker_array.markers.reserve( marker_array.markers.size() + contact_hull_points.size() );
+
+  for ( size_t i = 0; i < contact_hull_points.size(); i++ ) {
+    visualization_msgs::Marker marker;
+    marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.scale.z = 0.1; // Text size
+
+    marker.color.a = marker.color.r = marker.color.g = marker.color.b = 1.0f;
+    marker.header.frame_id = frame_id;
+    marker.ns = ns;
+    marker.id = static_cast<int32_t>( i );
+
+    // Compute center of axis
+    int ip1 = ( i + 1 ) % contact_hull_points.size(); // wrap around
+    Eigen::Vector3d diff = contact_hull_points[ip1] - contact_hull_points[i];
+    Eigen::Vector3d center = contact_hull_points[i] + 0.5 * diff;
+    center.z() += 0.05; // Place above axis
+    marker.pose.position = hector_math::vectorToPointMsg( center.template cast<double>() );
+    marker.pose.orientation.w = 1.0; // Identity pose
+
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(1) << edge_stabilities[i];
+    marker.text = stream.str();
+
+    marker_array.markers.push_back( marker );
+  }
 }
 
 template<typename Scalar>
@@ -195,6 +237,8 @@ void addSupportPolygonToMarkerArray(
   addContactPointsToMarkerArray( marker_array, support_polygon.contact_hull_points,
                                  Eigen::Vector4f( 0, 1, 0, 1 ), frame_id, "support_polygon_points",
                                  0.04 );
+  addEdgeStabilitiesTextToMarkerArray( marker_array, support_polygon.contact_hull_points,
+                                       support_polygon.edge_stabilities, frame_id, "stability_text");
 }
 
 template<typename Scalar>
