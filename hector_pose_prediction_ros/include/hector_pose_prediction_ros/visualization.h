@@ -232,13 +232,14 @@ void addSupportPolygonToMarkerArray(
     addSupportPolygonEdgesWithStabilityToMarkerArray(
         marker_array, support_polygon.contact_hull_points, support_polygon.edge_stabilities, 6.0,
         frame_id, "support_polygon" );
+    addEdgeStabilitiesTextToMarkerArray(
+        marker_array, support_polygon.contact_hull_points, support_polygon.edge_stabilities,
+        frame_id, "stability_text");
   }
   // Draw convex hull points
   addContactPointsToMarkerArray( marker_array, support_polygon.contact_hull_points,
                                  Eigen::Vector4f( 0, 1, 0, 1 ), frame_id, "support_polygon_points",
                                  0.04 );
-  addEdgeStabilitiesTextToMarkerArray( marker_array, support_polygon.contact_hull_points,
-                                       support_polygon.edge_stabilities, frame_id, "stability_text");
 }
 
 template<typename Scalar>
