@@ -10,49 +10,39 @@ find_package(hector_math REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(hector_math_ros REQUIRED)
 
-set(THIS_PACKAGE_DEPENDENCIES
-        hector_pose_prediction_interface
-        hector_math
-        visualization_msgs
-        hector_math_ros
-)
+set(THIS_PACKAGE_DEPENDENCIES hector_pose_prediction_interface hector_math
+                              visualization_msgs hector_math_ros)
 
-###########
-## Build ##
-###########
+# ##############################################################################
+# Build ##
+# ##############################################################################
 
 # Header-only interface library
 add_library(${PROJECT_NAME} INTERFACE)
 
-target_include_directories(${PROJECT_NAME} INTERFACE
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+target_include_directories(
+  ${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(${PROJECT_NAME} INTERFACE
-        ${THIS_PACKAGE_DEPENDENCIES}
-)
+                          ${THIS_PACKAGE_DEPENDENCIES})
 
-#############
-## Install ##
-#############
-
-install(
-        TARGETS ${PROJECT_NAME}
-        EXPORT export_${PROJECT_NAME}
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin
-)
+# ##############################################################################
+# Install ##
+# ##############################################################################
 
 install(
-        DIRECTORY include/${PROJECT_NAME}/
-        DESTINATION include/${PROJECT_NAME}
-)
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
-##########
-## Export##
-##########
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
+
+# ##############################################################################
+# Export##
+# ##############################################################################
 
 ament_export_include_directories(include)
 ament_export_dependencies(${THIS_PACKAGE_DEPENDENCIES})

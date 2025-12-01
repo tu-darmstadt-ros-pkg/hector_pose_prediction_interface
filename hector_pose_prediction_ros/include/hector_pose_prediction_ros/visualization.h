@@ -5,9 +5,9 @@
 #include <hector_math/types.h>
 #include <hector_math_ros/message_conversions/geometry_msgs.h>
 #include <hector_pose_prediction_interface/types.h>
+#include <sstream>
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
-#include <sstream>
 
 namespace hector_pose_prediction_interface
 {
@@ -96,11 +96,10 @@ void addSupportPolygonEdgesWithStabilityToMarkerArray(
 }
 
 template<typename Scalar>
-void addEdgeStabilitiesTextToMarkerArray(
-    visualization_msgs::MarkerArray &marker_array,
-    const hector_math::Vector3List<Scalar> &contact_hull_points,
-    const std::vector<Scalar> &edge_stabilities, const std::string &frame_id,
-    const std::string &ns )
+void addEdgeStabilitiesTextToMarkerArray( visualization_msgs::MarkerArray &marker_array,
+                                          const hector_math::Vector3List<Scalar> &contact_hull_points,
+                                          const std::vector<Scalar> &edge_stabilities,
+                                          const std::string &frame_id, const std::string &ns )
 {
   if ( contact_hull_points.size() != edge_stabilities.size() ) {
     throw std::invalid_argument(
@@ -129,7 +128,7 @@ void addEdgeStabilitiesTextToMarkerArray(
     marker.pose.orientation.w = 1.0; // Identity pose
 
     std::stringstream stream;
-    stream << std::fixed << std::setprecision(1) << edge_stabilities[i];
+    stream << std::fixed << std::setprecision( 1 ) << edge_stabilities[i];
     marker.text = stream.str();
 
     marker_array.markers.push_back( marker );
@@ -232,9 +231,9 @@ void addSupportPolygonToMarkerArray(
     addSupportPolygonEdgesWithStabilityToMarkerArray(
         marker_array, support_polygon.contact_hull_points, support_polygon.edge_stabilities, 6.0,
         frame_id, "support_polygon" );
-    addEdgeStabilitiesTextToMarkerArray(
-        marker_array, support_polygon.contact_hull_points, support_polygon.edge_stabilities,
-        frame_id, "stability_text");
+    addEdgeStabilitiesTextToMarkerArray( marker_array, support_polygon.contact_hull_points,
+                                         support_polygon.edge_stabilities, frame_id,
+                                         "stability_text" );
   }
   // Draw convex hull points
   addContactPointsToMarkerArray( marker_array, support_polygon.contact_hull_points,

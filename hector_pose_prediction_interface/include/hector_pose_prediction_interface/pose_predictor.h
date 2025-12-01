@@ -12,9 +12,8 @@ namespace hector_pose_prediction_interface
 
 template<typename Scalar>
 struct PosePredictorSettings {
-  PosePredictorSettings( int maximum_iterations, Scalar contact_threshold,
-                         Scalar tip_over_threshold, bool fix_xy_coordinates = false,
-                         Scalar convexity_threshold = Scalar(0.0) )
+  PosePredictorSettings( int maximum_iterations, Scalar contact_threshold, Scalar tip_over_threshold,
+                         bool fix_xy_coordinates = false, Scalar convexity_threshold = Scalar( 0.0 ) )
       : maximum_iterations( maximum_iterations ), contact_threshold( contact_threshold ),
         tip_over_threshold( tip_over_threshold ), convexity_threshold( convexity_threshold ),
         fix_xy_coordinates( fix_xy_coordinates )
@@ -31,8 +30,8 @@ struct PosePredictorSettings {
   //! over. If the length in z-direction of the projected z-axis is smaller than this value
   Scalar tip_over_threshold;
 
-  //! Positive values increase the strictness for determining convexity and, therefore, simplify the support polygon.
-  //! The default is 0.
+  //! Positive values increase the strictness for determining convexity and, therefore, simplify the
+  //! support polygon. The default is 0.
   Scalar convexity_threshold;
 
   //! If true the x-y position is kept fixed rather than being updated to reflect rotation induced translations
