@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 project(hector_pose_prediction_ros LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -24,8 +24,11 @@ target_include_directories(
   ${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                             $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(${PROJECT_NAME} INTERFACE
-                          ${THIS_PACKAGE_DEPENDENCIES})
+target_link_libraries(
+  ${PROJECT_NAME}
+  INTERFACE hector_pose_prediction_interface::hector_pose_prediction_interface
+            hector_math::hector_math ${visualization_msgs_TARGETS}
+            hector_math_ros::hector_math_ros)
 
 # ##############################################################################
 # Install ##

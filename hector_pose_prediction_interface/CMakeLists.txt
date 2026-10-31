@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 project(
   hector_pose_prediction_interface
   VERSION 0.8
@@ -26,10 +26,9 @@ target_include_directories(
   ${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                             $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(${PROJECT_NAME} INTERFACE Eigen3::Eigen)
-
-ament_target_dependencies(${PROJECT_NAME} INTERFACE hector_math
-                          hector_stability_metrics)
+target_link_libraries(
+  ${PROJECT_NAME} INTERFACE Eigen3::Eigen hector_math::hector_math
+                            hector_stability_metrics::hector_stability_metrics)
 
 # ##############################################################################
 # Install ##
@@ -53,8 +52,7 @@ if(BUILD_TESTING)
   # If you later port the tests, use something like:
   #
   # ament_add_gtest(test_pose test/test_pose.cpp ) if(TARGET test_pose)
-  # target_link_libraries(test_pose ${PROJECT_NAME})
-  # ament_target_dependencies(test_pose ${THIS_PACKAGE_DEPENDENCIES}) endif()
+  # target_link_libraries(test_pose ${PROJECT_NAME}) endif()
   #
   # (rostest/launch-based tests would be replaced with launch_testing in ROS 2.)
 
